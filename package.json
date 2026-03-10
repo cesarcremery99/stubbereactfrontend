@@ -1,7 +1,8 @@
 {
-  "name": "frontend-react",
+  "name": "stubbe-admin-dashboard",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Modern React admin dashboard for Stubbe TrackTrace API with authentication, search, and data management",
   "type": "module",
   "scripts": {
     "dev": "vite",

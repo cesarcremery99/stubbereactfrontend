@@ -1,6 +1,10 @@
 # Stubbe Admin Dashboard
 
-A modern React-based admin dashboard for the Stubbe TrackTrace API. Built with React 19, TypeScript, Tailwind CSS v4, and Vite.
+> A modern React-based admin dashboard for the Stubbe TrackTrace API.  
+> **Version**: 1.0.0 | **Status**: ✅ Production Ready  
+> [📋 Changelog](./CHANGELOG.md) | [🐛 Issues](https://github.com/cesarcremery99/stubbereactfrontend/issues)
+
+Built with React 19, TypeScript, Tailwind CSS v4, and Vite.
 
 ## ✨ Features
 
@@ -44,7 +48,7 @@ A modern React-based admin dashboard for the Stubbe TrackTrace API. Built with R
 git clone https://github.com/cesarcremery99/stubbereactfrontend.git
 cd stubbereactfrontend
 
-# Install dependencies
+# Install dependencies (v1.0.0)
 npm install
 ```
 
@@ -221,6 +225,33 @@ VITE_API_URL=https://localhost:7046/api
 
 # Other configurations
 VITE_DEBUG=false
+```
+
+## 📍 Versioning
+
+This project uses **Semantic Versioning** (MAJOR.MINOR.PATCH):
+
+- **Current Version**: 1.0.0
+- **Release Date**: March 10, 2026
+- **Status**: ✅ Production Ready
+
+### Version History
+
+See [CHANGELOG.md](./CHANGELOG.md) for detailed release notes and update history.
+
+**Versioning Strategy:**
+- **MAJOR** (x.0.0): Breaking API changes or major architectural updates
+- **MINOR** (0.x.0): New features (backwards compatible)
+- **PATCH** (0.0.x): Bug fixes and minor improvements
+
+### Checking Your Version
+
+```bash
+# Check version from package.json
+npm list | grep stubbe-admin-dashboard
+
+# Or view VERSION file
+cat VERSION
 ```
 
 ## 🚢 Deployment
