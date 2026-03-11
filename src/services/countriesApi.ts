@@ -3,7 +3,8 @@ import { apiRequest } from './apiClient'
 export interface Country {
   id: number
   name: string
-  code: string
+  code?: string
+  isoCode?: string
   [key: string]: unknown
 }
 
@@ -87,4 +88,33 @@ export async function searchCountries(
     hasNextPage: false,
     items: [],
   }
+}
+
+export async function fetchCountriesReference(
+  baseUrl: string,
+  accessToken: string,
+): Promise<Country[]> {
+  const result = await apiRequest({
+    baseUrl,
+    path: '/countries/reference',
+    method: 'GET',
+    accessToken,
+    errorPrefix: 'Failed to fetch countries reference',
+  })
+
+  if (result && typeof result === 'object') {
+    // Handle the response wrapper format
+    if ('data' in result && (result as { data?: unknown }).data) {
+      const data = (result as { data?: unknown }).data as { items?: Country[] }
+      if (data.items && Array.isArray(data.items)) {
+        return data.items
+      }
+    }
+    // Handle direct array response
+    if (Array.isArray(result)) {
+      return result as Country[]
+    }
+  }
+
+  return []
 }

@@ -2,8 +2,35 @@ import { apiRequest } from './apiClient'
 
 export interface Product {
   id: number
-  name: string
+  name?: string
+  description?: string
+  alterNateDescription?: string
+  trackTraceDescription?: string
+  facilityId: number
+  facilityName?: string
+  countryId: number
+  countryName?: string
+  isBlockedForTransaction: boolean
+  blockedForTransaction?: string
+  isBlockedForProduction: boolean
+  blockedForProduction?: string
+  isValidForProduction: boolean
+  freeForProduction: boolean
+  isMixedProduct: boolean
+  createdAt?: string
+  updatedAt?: string
   [key: string]: unknown
+}
+
+export interface ProductFilters {
+  id?: number | ''
+  name?: string
+  description?: string
+  facilityId?: number | ''
+  countryId?: number | ''
+  isBlockedForProduction?: boolean | ''
+  freeForProduction?: boolean | ''
+  isMixedProduct?: boolean | ''
 }
 
 export interface PaginatedResponse<T> {
@@ -72,6 +99,47 @@ export async function searchProducts(
     },
     accessToken,
     errorPrefix: 'Failed to search products',
+  })
+
+  if (result && typeof result === 'object') {
+    const response = result as ApiResponse<Product>
+    if (response.data) {
+      return response.data
+    }
+  }
+
+  return {
+    pageNumber,
+    pageSize,
+    totalPages: 0,
+    totalItemCount: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+    items: [],
+  }
+}
+
+export async function filterProducts(
+  baseUrl: string,
+  accessToken: string,
+  filters: ProductFilters,
+  pageNumber: number = 1,
+  pageSize: number = 15,
+): Promise<PaginatedResponse<Product>> {
+  const cleanFilters = Object.fromEntries(
+    Object.entries(filters).filter(([, value]) => value !== '' && value !== null && value !== undefined),
+  )
+
+  const result = await apiRequest({
+    baseUrl,
+    path: `/products/search`,
+    method: 'POST',
+    body: {
+      ...cleanFilters,
+      pagination: { pageNumber, pageSize },
+    },
+    accessToken,
+    errorPrefix: 'Failed to filter products',
   })
 
   if (result && typeof result === 'object') {

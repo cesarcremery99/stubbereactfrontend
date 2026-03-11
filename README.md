@@ -1,7 +1,7 @@
 # Stubbe Admin Dashboard
 
 > A modern React-based admin dashboard for the Stubbe TrackTrace API.  
-> **Version**: 1.0.0 | **Status**: ✅ Production Ready  
+> **Version**: 1.0.1 | **Status**: ✅ Production Ready  
 > [📋 Changelog](./CHANGELOG.md) | [🐛 Issues](https://github.com/cesarcremery99/stubbereactfrontend/issues)
 
 Built with React 19, TypeScript, Tailwind CSS v4, and Vite.

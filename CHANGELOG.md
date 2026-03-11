@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-03-11
+
+### Added
+- ✨ **Enhanced Products Page**: Full DTO expansion with complete field display
+  - All product fields now visible: id, name, description, facilityId, countryId, colors, types
+  - Status flags: isBlockedForProduction, freeForProduction, isMixedProduct
+  
+- 🔍 **Advanced Products Filtering**: Multi-field search with submit-only execution
+  - Text filters: name, description
+  - Numeric filter: facilityId
+  - Country dropdown: Dynamic reference data from /api/countries/reference
+  - Boolean filters: Production status flags
+  - Prevents unnecessary API calls with separated filter state (filters vs appliedFilters)
+
+- 🛋️ **Redesigned Navigation**: Improved sidebar with integrated user profile
+  - Full-height fixed sidebar spanning entire viewport
+  - Integrated user profile section with avatar, name, and role
+  - Profile dropdown menu (Dashboard, Dark Mode, Logout)
+  - Hierarchical menu structure (Language Management parent folder)
+
+- 🔐 **Routing & Authentication**: Enhanced login flow
+  - Proper initialization of authentication state on app load
+  - Login page displayed by default for unauthenticated users
+  - Loading state with spinner during route initialization
+  - Prevents undefined content rendering
+
+### Changed
+- Removed TopNav component (now integrated into Sidebar profile section)
+- Countries fetchCountriesReference() now properly unwraps API response wrapper (data.items)
+- Updated Country interface to include isoCode property
+- Boolean filter values converted to strings for proper select element binding
+
+### Fixed
+- App routing now correctly initializes based on authentication status
+- TypeScript errors in ProductsPage boolean select elements resolved
+- Proper handling of paginated API responses in countriesApi
+
 ## [1.0.0] - 2026-03-10
 
 ### Added

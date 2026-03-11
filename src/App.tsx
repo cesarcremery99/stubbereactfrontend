@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, ReactElement } from 'react'
-import TopNav from './components/TopNav'
 import Sidebar from './components/Sidebar'
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage'
@@ -17,7 +16,7 @@ import { clearSession, getSession, isLoggedIn, saveSession, Session } from './se
 const DEFAULT_API_URL = 'https://localhost:7046/api'
 
 function App(): ReactElement {
-  const [route, setRoute] = useState<string>(window.location.pathname || '/dashboard')
+  const [route, setRoute] = useState<string>('')
   const [baseUrl] = useState<string>(localStorage.getItem('authApiBaseUrl') || DEFAULT_API_URL)
   const [session, setSession] = useState<Session>(getSession())
   const [darkMode, setDarkMode] = useState<boolean>(() => {
@@ -25,14 +24,25 @@ function App(): ReactElement {
     return saved ? JSON.parse(saved) : false
   })
 
+  const loggedIn = useMemo(() => isLoggedIn(session), [session])
+
   useEffect(() => {
-    const onPopState = () => setRoute(window.location.pathname || '/dashboard')
+    const onPopState = () => setRoute(window.location.pathname || '/login')
     window.addEventListener('popstate', onPopState)
-    if (window.location.pathname === '/') {
-      navigate('/dashboard', true)
-    }
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
+
+  useEffect(() => {
+    // Initialize route on first load
+    if (!route) {
+      const initialPath = window.location.pathname
+      if (loggedIn) {
+        setRoute(initialPath || '/dashboard')
+      } else {
+        setRoute('/login')
+      }
+    }
+  }, [loggedIn, route])
 
   useEffect(() => {
     if (darkMode) {
@@ -47,7 +57,13 @@ function App(): ReactElement {
     setDarkMode((prev) => !prev)
   }
 
-  const loggedIn = useMemo(() => isLoggedIn(session), [session])
+  useEffect(() => {
+    // If not logged in and trying to access a protected route, redirect to login
+    if (!loggedIn && route && route !== '/login') {
+      setRoute('/login')
+      window.history.replaceState({}, '', '/login')
+    }
+  }, [loggedIn, route])
 
   function navigate(path: string, replace = false): void {
     if (replace) {
@@ -109,21 +125,30 @@ function App(): ReactElement {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
-      <TopNav
-        loggedIn={loggedIn}
-        email={session.email}
-        darkMode={darkMode}
-        onToggleDarkMode={toggleDarkMode}
-        onDashboard={() => navigate('/dashboard')}
-        onLogin={() => navigate('/login')}
-        onLogout={handleLogout}
-      />
+    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+      {loggedIn && (
+        <Sidebar
+          currentPath={route}
+          onNavigate={navigate}
+          loggedIn={loggedIn}
+          email={session.email}
+          darkMode={darkMode}
+          onToggleDarkMode={toggleDarkMode}
+          onDashboard={() => navigate('/dashboard')}
+          onLogin={() => navigate('/login')}
+          onLogout={handleLogout}
+        />
+      )}
 
-      {loggedIn && <Sidebar currentPath={route} onNavigate={navigate} loggedIn={loggedIn} />}
-
-      <main className={`flex-1 p-8 flex flex-col items-stretch w-full bg-gray-50 dark:bg-gray-950 ${loggedIn ? 'ml-60 w-[calc(100%-240px)]' : ''}`}>
-        {route === '/login' ? (
+      <main className={`flex-1 p-8 flex flex-col items-stretch bg-gray-50 dark:bg-gray-950 ${loggedIn ? 'ml-60' : ''}`}>
+        {!route ? (
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+            </div>
+          </div>
+        ) : route === '/login' ? (
           <LoginPage
             onSubmit={handleLogin}
           />
