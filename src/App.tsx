@@ -19,10 +19,6 @@ function App(): ReactElement {
   const [route, setRoute] = useState<string>('')
   const [baseUrl] = useState<string>(localStorage.getItem('authApiBaseUrl') || DEFAULT_API_URL)
   const [session, setSession] = useState<Session>(getSession())
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    const saved = localStorage.getItem('darkMode')
-    return saved ? JSON.parse(saved) : false
-  })
 
   const loggedIn = useMemo(() => isLoggedIn(session), [session])
 
@@ -41,27 +37,6 @@ function App(): ReactElement {
       } else {
         setRoute('/login')
       }
-    }
-  }, [loggedIn, route])
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark-mode')
-    } else {
-      document.documentElement.classList.remove('dark-mode')
-    }
-    localStorage.setItem('darkMode', JSON.stringify(darkMode))
-  }, [darkMode])
-
-  function toggleDarkMode(): void {
-    setDarkMode((prev) => !prev)
-  }
-
-  useEffect(() => {
-    // If not logged in and trying to access a protected route, redirect to login
-    if (!loggedIn && route && route !== '/login') {
-      setRoute('/login')
-      window.history.replaceState({}, '', '/login')
     }
   }, [loggedIn, route])
 
@@ -125,22 +100,20 @@ function App(): ReactElement {
   }
 
   return (
-    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+    <div className="min-h-screen flex [&]:bg-[#f3f3f4] transition-colors duration-300">
       {loggedIn && (
         <Sidebar
           currentPath={route}
           onNavigate={navigate}
           loggedIn={loggedIn}
           email={session.email}
-          darkMode={darkMode}
-          onToggleDarkMode={toggleDarkMode}
           onDashboard={() => navigate('/dashboard')}
           onLogin={() => navigate('/login')}
           onLogout={handleLogout}
         />
       )}
 
-      <main className={`flex-1 p-8 flex flex-col items-stretch bg-gray-50 dark:bg-gray-950 ${loggedIn ? 'ml-60' : ''}`}>
+      <main className={`flex-1 p-8 flex flex-col items-stretch [&]:bg-[#f3f3f4] ${loggedIn ? 'ml-64' : ''}`}>
         {!route ? (
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center">
